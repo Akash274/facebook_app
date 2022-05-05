@@ -10,7 +10,7 @@
 
 	<head>
     <meta charset="UTF-8">
-    <title>Facebook</title>
+    <title>FB Companion APP</title>
     <link type="text/css" rel="stylesheet" href="stylesheets/main.css" />
 	
 </head>
@@ -100,6 +100,9 @@
 					console.log('Successful login for: ' + response.name);
 					document.getElementById('status').innerHTML =
 						'Thanks for logging in, ' + response.name + '!';
+					var user_id = document.getElementById('user_id');
+					user_id.value = response.id;
+					console.log(user_id);
 				});
 				//List<String> listURL = new ArrayList<String>();
 				//List<String> listID = new ArrayList<String>();
@@ -176,12 +179,15 @@
 	        	
 	        	<input type ="hidden" name="url" id = "url_val" value="")>
 	        	<input type ="hidden" name="id" id = "id_val" value="")>
+	        	<input type ="hidden" name="user_id" id = "user_id" value="")>
 	        	<div style="margin-top: 2rem;">
 	        		<input type="submit" name = "result" value="Upload">
 	        	</div>
 	        	
 	        </form>
-	        
+	        <div style="margin-top: 2rem;">
+	        	<button type="button" onclick="logout()">Logout</button>
+	        </div>
 	        <div style="margin-top: 2%;" id="status"></div>
 		
 		</div>

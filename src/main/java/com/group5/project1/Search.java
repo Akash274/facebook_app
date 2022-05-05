@@ -50,16 +50,25 @@ public class Search extends HttpServlet {
 		op.print(searchLabel);*/
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		PrintWriter op = response.getWriter();
+		/*
 		String searchLabel = request.getQueryString();
 		searchLabel = searchLabel.substring(12, searchLabel.length());
-		
+		String [] list_url = searchLabel.split("&");
+		*/
+		//searchLabel = list_url[1].substring(12, searchLabel.length());
+		//HttpSession session = request.getSession(true);
+		//String user = (String) session.getAttribute("user_id");
+		String user = (String) request.getParameter("user_id");
+		String searchLabel = (String) request.getParameter("searchLabel");
+		op.println(searchLabel);
+		op.println("users"+user);
 		String[] operate = searchLabel.split("\\+");
 		for (int i =0; i<operate.length;i++) {
 			operate[i] = operate[i].substring(0,1).toUpperCase()+operate[i].substring(1);
 		}
 		searchLabel = String.join(" ",operate);
 		op.print(searchLabel);
-		ArrayList<String> listlable = getImageFromStore(request, response, datastore, searchLabel);
+		ArrayList<String> listlable = getImageFromStore(user, request, response, datastore, searchLabel);
 		op.println("<ul>"); 
 		String [] url = new String[listlable.size()];
 		for(String str : listlable) { 
@@ -102,7 +111,7 @@ public class Search extends HttpServlet {
 		PrintWriter op = response.getWriter();
 		op.print(searchLabel);
 	}
-	private ArrayList<String> getImageFromStore(HttpServletRequest request, HttpServletResponse response, DatastoreService datastore, String imageId) {
+	private ArrayList<String> getImageFromStore(String user, HttpServletRequest request, HttpServletResponse response, DatastoreService datastore, String imageId) {
 		/**
 		 * This function takes HttpServletRequest request, HttpServletResponse response, DatastoreService datastore, String label as parameters
 		 * and it is used to fetch the all the image url from datastore that has the same label
@@ -115,9 +124,13 @@ public class Search extends HttpServlet {
         ArrayList<String> listlable = new ArrayList<>();
         if(null != results) {
             results.forEach(user_Photo -> {
+            	String image_url=user_Photo.getProperty("image_url").toString();
+            	String user_id = user_Photo.getProperty("user_id").toString();
+                if(user_id.equals(user)) {
+                	
+                    listlable.add(image_url);
+                }
                 
-                String image_url=user_Photo.getProperty("image_url").toString();
-                listlable.add(image_url);
                 
             });
         }

@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>FB Companion APP</title>
 </head>
 <body bgcolor="lightblue">
 	
@@ -66,6 +66,21 @@
 		   imgDiv.appendChild(br3);
 	   }
 	</script>
+	<script type="text/javascript">
+function logout() {
+	FB.logout(function (response) {
+		location.reload(true);
+	});
+}
+(function (d, s, id) {
+	var js, fjs = d.getElementsByTagName(s)[0];
+	if (d.getElementById(id)) return;
+	js = d.createElement(s);
+	js.id = id;
+	js.src = "https://connect.facebook.net/en_US/sdk.js";
+	fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+</script>
 	
 	<script async src="https://www.googletagmanager.com/gtag/js?id=G-9E7CKGNNYW"></script>
 	
@@ -81,5 +96,6 @@
 	
 	<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v13.0&appId=988483798473577&autoLogAppEvents=1" nonce="91e8CQ5N">
 	</script>
+	
 </body>
 </html>

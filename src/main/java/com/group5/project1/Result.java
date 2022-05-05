@@ -89,6 +89,7 @@ public class Result extends HttpServlet {
 
 			String url = (String) request.getParameter("url");
 			String id = (String) request.getParameter("id");
+			String user = (String) request.getParameter("user_id");
 
 			String[] urlArray = url.split(",");
 			String[] idArray = id.split(",");
@@ -128,14 +129,14 @@ public class Result extends HttpServlet {
 		                		listlable.add(lable);
 		                	}
 
-		                    addImageDetailsToDataStore(url, lable, FbPhotoId, datastore);
+		                    addImageDetailsToDataStore(user, url, lable, FbPhotoId, datastore);
 		                    //getImageFromStore(request, response, datastore, FbPhotoId);
 		                }
 						
 		            }
 		        }else{
 		            //getImageFromStore(request, response, datastore, FbPhotoId);
-		        	ArrayList<String> listlable2 = getLabelFromDataStore(request, response, datastore);
+		        	ArrayList<String> listlable2 = getLabelFromDataStore(user, request, response, datastore);
 		        	int len = listlable2.size();
 		        	op.println(len+"\n");
 		        	for(int a = 0; a<len;a++) {
@@ -156,9 +157,12 @@ public class Result extends HttpServlet {
 			for (int i = 0; i <listlable.size();i++ ) {
 				arrList[i] = listlable.get(i);
 			}
-			//request.setAttribute("labelList", arrList);
+			request.setAttribute("labelList", arrList);
+
+			request.setAttribute("user_id", user);
 			RequestDispatcher dispatcher = getServletContext()
                     .getRequestDispatcher("/labels.jsp");
+			
 			
 			try {
 				dispatcher.forward(request, response);
@@ -182,13 +186,13 @@ public class Result extends HttpServlet {
 	}
 	
 	
-	private ArrayList<String> getLabelFromDataStore(HttpServletRequest request, HttpServletResponse response,
+	private ArrayList<String> getLabelFromDataStore(String user,HttpServletRequest request, HttpServletResponse response,
 			DatastoreService datastore) {
 		// TODO Auto-generated method stub
 		String Lable = null;
 		 ArrayList<String> listlable = new ArrayList<>();
 		
-		 Query q = new Query("User_Images");
+		 Query q = new Query("User_Images").setFilter(new Query.FilterPredicate("user_id", Query.FilterOperator.EQUAL, user));
 		 PreparedQuery pq = datastore.prepare(q);
 		 List<Entity> results = pq.asList(FetchOptions.Builder.withDefaults());
 	        if(null != results) {
@@ -200,7 +204,7 @@ public class Result extends HttpServlet {
 		return listlable;
 	}
 
-	public static void addImageDetailsToDataStore(String url, String labels, String imageId, DatastoreService
+	public static void addImageDetailsToDataStore(String user, String url, String labels, String imageId, DatastoreService
             datastore) {
         /**
          * This function takes the url, label, id and datastore as parameters
@@ -211,11 +215,11 @@ public class Result extends HttpServlet {
         User_Images.setProperty("image_id", imageId);
         User_Images.setProperty("image_url", url);
         User_Images.setProperty("labels", labels);
+        User_Images.setProperty("user_id", user);
         datastore.put(User_Images);
     }
 /*
     private void getImageFromStore(HttpServletRequest request, HttpServletResponse response, DatastoreService datastore, String imageId) {
-
         Query query =
                 new Query("User_Images")
                         .setFilter(new Query.FilterPredicate("image_id", Query.FilterOperator.EQUAL, imageId));
@@ -242,7 +246,6 @@ public class Result extends HttpServlet {
                 
             });
         }
-
     }
 */
     public static boolean checkIfImageExists(DatastoreService datastore, String imageId) {
@@ -298,7 +301,6 @@ public class Result extends HttpServlet {
 		  is = url.openStream ();
 		  byte[] byteChunk = new byte[4096]; // Or whatever size you want to read in at a time.
 		  int n;
-
 		  while ( (n = is.read(byteChunk)) > 0 ) {
 		    baos.write(byteChunk, 0, n);
 		  }
